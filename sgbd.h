@@ -83,15 +83,14 @@ void makeTable() {
 
 void showTables() {
   char arqName[] = "struct.txt";
-  FILE* arq = fopen(arqName, "r");
-  char line [1000];
+  FILE *arq = fopen(arqName, "r");
+  char line[1000];
   int cont = 1;
   printf("\nAll tables:\n");
-  while(fgets(line, sizeof(line), arq) != NULL){
+  while (fgets(line, sizeof(line), arq) != NULL) {
     printf("%d - %s", cont, line);
     cont++;
   }
-  
 }
 
 void delTable() {
