@@ -42,23 +42,12 @@ void openTable() {
     printf("Chose a option: ");
     scanf("%d", &key);
     switch (key) {
-    case 1:
-      showData();
-      break;
-    case 2:
-      insertData();
-      break;
-    case 3:
-      delData();
-      break;
-    case 4:
-      searchData();
-      break;
-    case 5:
-      on = 0;
-      break;
-    default:
-      printf("Invalid option!\n\n");
+      case 1: showData(); break;
+      case 2: insertData(); break;
+      case 3: delData(); break;
+      case 4: searchData(); break;
+      case 5: on = 0; break;
+      default: printf("Invalid option!\n\n");
     }
   }
 }
@@ -76,23 +65,12 @@ int main(void) {
     printf("Chose a option: ");
     scanf("%d", &key);
     switch (key) {
-    case 1:
-      makeTable();
-      break;
-    case 2:
-      showTables();
-      break;
-    case 3:
-      delTable();
-      break;
-    case 4:
-      openTable();
-      break;
-    case 5:
-      on = 0;
-      break;
-    default:
-      printf("Invalid option!\n\n");
+      case 1: makeTable(); break;
+      case 2: showTables(); break;
+      case 3: delTable(); break;
+      case 4: openTable(); break;
+      case 5: on = 0; break;
+      default: printf("Invalid option!\n\n");
     }
   }
   printf("See you late!!!");
