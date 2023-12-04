@@ -82,8 +82,16 @@ void makeTable() {
 }
 
 void showTables() {
-  // To make
-  // 1-deverá mostrar para o usuário as tabelas existentes
+  char arqName[] = "struct.txt";
+  FILE* arq = fopen(arqName, "r");
+  char line [1000];
+  int cont = 1;
+  printf("\nAll tables:\n");
+  while(fgets(line, sizeof(line), arq) != NULL){
+    printf("%d - %s", cont, line);
+    cont++;
+  }
+  
 }
 
 void delTable() {
