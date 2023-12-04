@@ -1,5 +1,6 @@
 //--||Includes||--
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -7,31 +8,17 @@
 //--|||Functions|||--
 
 //Made for Rômulo
+char* toLower(char *string){
+  for(int i = 0; i<strlen(string); i++){
+    string[i] = tolower(string[i]);
+  }
+  return string;
+}
+
 void serverOn(){
   FILE *server;
   server = fopen("struct.txt", "a" );
   fclose(server);
-}
-
-void makeTable(){
-  //To make
-  /*
-    1-usuário deve informar o nome da tabela;
-    2-os tipos poderão ser os tipos primitivos em C
-    3-os valores deverão ser armazenados em arquivo;
-    4-na criação da tabela deverá ser solicitado um nome da chave primária
-    5-a chave primária deve ser do tipo inteiro sem sinal
-  */
-}
-
-void showTables(){
-  //To make
-  //1-deverá mostrar para o usuário as tabelas existentes
-}
-
-void delTable(){
-  //To make
-  //1-usuário deverá fornecer o nome da tabela a ser apagada
 }
 
 int tableExists(char *name){
@@ -43,6 +30,61 @@ int tableExists(char *name){
   }
   fclose(table);
   return 1;
+}
+
+void makeTable(){
+  char *name = (char *)malloc(50 * sizeof(char));
+  char trash;
+  printf("Table name: ");
+  scanf("%s%c", name, &trash);
+  name = toLower(name);
+  char *arqName = (char *)malloc(50 * sizeof(char));
+  strcpy(arqName, name);
+  strcat(arqName, ".txt");
+  FILE *table = fopen(arqName, "r" );
+  if(strcmp(arqName, "struct.txt") == 0 || table != NULL){
+    fclose(table);
+    printf("Invalid table!\n");
+    return;
+  } 
+  table = fopen(arqName, "a");
+  table = fopen("struct.txt", "w");
+  fprintf(table, "%s: ", name);
+  
+  printf("Primary Key name: ");
+  scanf("%s%c", name, &trash);
+  fprintf(table, "(%s, pk) ", name);
+
+  char type, option;
+  printf("\nChose i for int, c for char, s for string or d for double\n\n");
+  
+  while(1){
+    
+    printf("Colum name: ");
+    scanf("%s%c", name, &trash);
+    printf("Type: ");
+    scanf("%c%c", &type, &trash);
+    fprintf(table, "(%s, %c) ", name, type);
+    
+    printf("New colum [Y/N]: ");
+    scanf("%s%c", &option, &trash);
+    if(option == 'N'){
+      fprintf(table, "\n");
+      break;
+    }
+  }
+  
+  fclose(table);
+}
+
+void showTables(){
+  //To make
+  //1-deverá mostrar para o usuário as tabelas existentes
+}
+
+void delTable(){
+  //To make
+  //1-usuário deverá fornecer o nome da tabela a ser apagada
 }
 
 //Made for Dagson

@@ -1,17 +1,7 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "sgbd.h"
 
 //Made for Rômulo
-//--||functions||--
-char* toLower(char *string){
-  for(int i = 0; i<strlen(string); i++){
-    string[i] = tolower(string[i]);
-  }
-  return string;
-}
-
 //--||menssages||--
 void msg_menu(){
   printf("\n"
