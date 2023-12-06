@@ -1,2 +1,0 @@
-person: (cpf, pk) (name, s) (years, i) 
-product: (id, pk) (name, s) (value, i) 
