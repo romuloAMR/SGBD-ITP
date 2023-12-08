@@ -133,8 +133,18 @@ void insertData() {
   // To make
 }
 
-void showData() {
-  // To make
+void showData(char *name) {
+  char arqName[50];
+  snprintf(arqName, sizeof(arqName), "%s", path(name));
+  FILE *arq = fopen(arqName, "r");
+  char line[1000];
+  int cont = 1;
+  printf("\n%s Table Data:\n", name);
+  while (fgets(line, sizeof(line), arq) != NULL) {
+    printf("%d - %s", cont, line);
+    cont++;
+  }
+  printf("\n");
 }
 
 void searchData() {
