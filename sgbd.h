@@ -134,17 +134,19 @@ int verifyPK(char *nameArq, char *data) {
   char row[1000];
   char character;
   char buffer[100]; 
+  memset(buffer, 0, sizeof(buffer));
   char datatemp[100];
   snprintf(datatemp, 100, " %s", data);
 
   while (fgets(row, 1000, table) != NULL) {
+    fseek(table, -strlen(row), SEEK_CUR);
     while ((character = fgetc(table)) != EOF && character != ':');
 
     int i = 0;
     while ((character = fgetc(table)) != EOF && character != ')') {
 
       buffer[i++] = character;
-    
+
     }
 
     buffer[i] = '\0';
