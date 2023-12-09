@@ -129,8 +129,46 @@ void delTable() {
 }
 
 // Made for Dagson
-void insertData() {
-  // To make
+void insertData(char *name) {
+  char arqName[50];
+  snprintf(arqName, sizeof(arqName), "%s", path(name));
+  char row[1000];
+  char data[100];
+
+  FILE *arq = fopen(arqName, "a");
+  FILE *tables = fopen("struct.txt", "r");
+
+  while (fgets(row, 1000, tables) != NULL) {
+    if (strstr(row, name) != NULL) {
+      char *indexTwoPoints = strchr(row, ':');
+      if (indexTwoPoints != NULL) {
+        *indexTwoPoints = '\0';
+
+        char *initialColumn = indexTwoPoints + 1;
+        char *indexParenthesis = strchr(initialColumn, '(');
+
+        while (indexParenthesis != NULL) {
+          char *indexComma = strchr(indexParenthesis, ',');
+          if (indexComma != NULL) {
+            *indexComma = '\0';
+            char *nameColumn = indexParenthesis + 1;
+            printf("%s:", nameColumn);
+            scanf("%s", data);
+            fprintf(arq, "(%s: %s) ", nameColumn, data);
+
+            initialColumn = indexComma + 1;
+            indexParenthesis = strchr(initialColumn, '(');
+          } else {
+            break;
+          }
+        }
+      fprintf(arq, "\n");
+      }
+    }
+  }
+
+  fclose(tables);
+  fclose(arq);
 }
 
 void showData(char *name) {
