@@ -129,6 +129,34 @@ void delTable() {
 }
 
 // Made for Dagson
+int verifyPK(char *nameArq, char *data) {
+  FILE *table = fopen(nameArq, "r");
+  char row[1000];
+  char character;
+  char buffer[100]; 
+  char datatemp[100];
+  snprintf(datatemp, 100, " %s", data);
+
+  while (fgets(row, 1000, table) != NULL) {
+    while ((character = fgetc(table)) != EOF && character != ':');
+
+    int i = 0;
+    while ((character = fgetc(table)) != EOF && character != ')') {
+
+      buffer[i++] = character;
+    
+    }
+
+    buffer[i] = '\0';
+
+    if (strcmp(buffer, datatemp) == 0) {
+      return 1;
+    }
+  }
+    fclose(table);
+    return 0;
+}
+
 void insertData(char *name) {
   char arqName[50];
   snprintf(arqName, sizeof(arqName), "%s", path(name));
@@ -146,6 +174,7 @@ void insertData(char *name) {
 
         char *initialColumn = indexTwoPoints + 1;
         char *indexParenthesis = strchr(initialColumn, '(');
+        int flag = 0;
 
         while (indexParenthesis != NULL) {
           char *indexComma = strchr(indexParenthesis, ',');
@@ -154,7 +183,13 @@ void insertData(char *name) {
             char *nameColumn = indexParenthesis + 1;
             printf("%s:", nameColumn);
             scanf("%s", data);
-            fprintf(arq, "(%s: %s) ", nameColumn, data);
+            if(verifyPK(path(name), data) && flag == 0){
+              printf("Invalid name!");
+              return;
+            } else{
+              fprintf(arq, "(%s: %s) ", nameColumn, data);
+              flag = 1;
+            }
 
             initialColumn = indexComma + 1;
             indexParenthesis = strchr(initialColumn, '(');
