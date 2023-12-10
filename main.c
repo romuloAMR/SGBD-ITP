@@ -39,7 +39,7 @@ void openTable() {
   int key;
   while (on) {
     msg_table();
-    printf("Chose a option: ");
+    printf("Choose a option: ");
     scanf("%d", &key);
     switch (key) {
       case 1: showData(name); break;
@@ -62,7 +62,7 @@ int main(void) {
   printf("Hello User!\n");
   while (on) {
     msg_menu();
-    printf("Chose a option: ");
+    printf("Choose a option: ");
     scanf("%d", &key);
     switch (key) {
       case 1: makeTable(); break;

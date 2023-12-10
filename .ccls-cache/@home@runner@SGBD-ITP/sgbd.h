@@ -132,24 +132,11 @@ void delTable() {
 int verifyPK(char *nameArq, char *data) {
   FILE *table = fopen(nameArq, "r");
   char row[1000];
-  char character;
-  char buffer[100]; 
-  char datatemp[100];
-  snprintf(datatemp, 100, " %s", data);
-
+  char aux[50];
+  snprintf(aux, 50, "): %s]", data);
+  
   while (fgets(row, 1000, table) != NULL) {
-    while ((character = fgetc(table)) != EOF && character != ':');
-
-    int i = 0;
-    while ((character = fgetc(table)) != EOF && character != ']') {
-
-      buffer[i++] = character;
-
-    }
-
-    buffer[i] = '\0';
-
-    if (strcmp(buffer, datatemp) == 0) {
+    if (strstr(row, aux) != NULL) {
       return 1;
     }
   }
@@ -184,7 +171,7 @@ void insertData(char *name) {
             printf("%s:", nameColumn);
             scanf("%s", data);
             if(verifyPK(path(name), data) && flag == 0){
-              printf("Invalid name!");
+              printf("Invalid name!\n");
               return;
             } else{
               if(flag == 0){
@@ -230,7 +217,7 @@ void searchData() {
 
 void delData(char *name) {
   char pk[100];
-  printf("\nEnter the Primary Key:");
+  printf("\nEnter the Primary Key: ");
   scanf("%s", pk);
   if(verifyPK(path(name), pk)){
     FILE *table = fopen(path(name), "r");
@@ -251,7 +238,7 @@ void delData(char *name) {
     fclose(tempTable);
     
   } else {
-    printf("Invalid Primary Key!\n");
+    printf("\nInvalid Primary Key!\n");
     return;
   }
   
