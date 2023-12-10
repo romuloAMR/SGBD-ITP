@@ -134,16 +134,14 @@ int verifyPK(char *nameArq, char *data) {
   char row[1000];
   char character;
   char buffer[100]; 
-  memset(buffer, 0, sizeof(buffer));
   char datatemp[100];
   snprintf(datatemp, 100, " %s", data);
 
   while (fgets(row, 1000, table) != NULL) {
-    fseek(table, -strlen(row), SEEK_CUR);
     while ((character = fgetc(table)) != EOF && character != ':');
 
     int i = 0;
-    while ((character = fgetc(table)) != EOF && character != ')') {
+    while ((character = fgetc(table)) != EOF && character != ']') {
 
       buffer[i++] = character;
 
@@ -189,8 +187,12 @@ void insertData(char *name) {
               printf("Invalid name!");
               return;
             } else{
-              fprintf(arq, "(%s: %s) ", nameColumn, data);
-              flag = 1;
+              if(flag == 0){
+                fprintf(arq, "[%s (pk): %s] ", nameColumn, data);
+                flag = 1;
+              } else{
+                fprintf(arq, "[%s: %s] ", nameColumn, data);
+              }
             }
 
             initialColumn = indexComma + 1;
@@ -226,6 +228,6 @@ void searchData() {
   // To make
 }
 
-void delData() {
+void delData(char *name) {
   // To make
 }
