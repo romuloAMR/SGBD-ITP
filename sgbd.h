@@ -146,15 +146,16 @@ int verifyPK(char *nameArq, char *data) {
 
 void insertData(char *name) {
   char arqName[50];
-  snprintf(arqName, sizeof(arqName), "%s", path(name));
+  snprintf(arqName, sizeof(arqName), "%s", name);
   char row[1000];
   char data[100];
 
-  FILE *arq = fopen(arqName, "a");
+  FILE *arq = fopen(path(arqName), "a");
   FILE *tables = fopen("struct.txt", "r");
+  strcat(arqName, ":");
 
   while (fgets(row, 1000, tables) != NULL) {
-    if (strstr(row, name) != NULL) {
+    if (strstr(row, arqName) != NULL) {
       char *indexTwoPoints = strchr(row, ':');
       if (indexTwoPoints != NULL) {
         *indexTwoPoints = '\0';
@@ -211,8 +212,8 @@ void showData(char *name) {
   printf("\n");
 }
 
-void searchData() {
-  // To make
+void searchData(char *name) {
+  //To make
 }
 
 void delData(char *name) {
