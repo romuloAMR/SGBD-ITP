@@ -229,5 +229,30 @@ void searchData() {
 }
 
 void delData(char *name) {
-  // To make
+  char pk[100];
+  printf("\nEnter the Primary Key:");
+  scanf("%s", pk);
+  if(verifyPK(path(name), pk)){
+    FILE *table = fopen(path(name), "r");
+    FILE *tempTable = fopen("Tables/tempTable.txt", "w");
+
+    char row[1000];
+    char aux[50] = "): ";
+    strcat(aux, strcat(pk, "]"));
+    
+    while (fgets(row, sizeof(row), table) != NULL) {
+      if (strstr(row, aux) == NULL) {
+        fputs(row, tempTable);
+      }
+    }
+    fclose(table);
+    remove(path(name));
+    rename("Tables/tempTable.txt", path(name));
+    fclose(tempTable);
+    
+  } else {
+    printf("Invalid Primary Key!\n");
+    return;
+  }
+  
 }

@@ -44,7 +44,7 @@ void openTable() {
     switch (key) {
       case 1: showData(name); break;
       case 2: insertData(name); break;
-      case 3: delData(); break;
+      case 3: delData(name); break;
       case 4: searchData(); break;
       case 5: on = 0; break;
       default: printf("Invalid option!\n\n");
