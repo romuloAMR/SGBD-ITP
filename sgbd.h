@@ -144,6 +144,43 @@ int verifyPK(char *nameArq, char *data) {
     return 0;
 }
 
+void listColumns(char *name){
+  char row[1000];
+  char arqName[50];
+  snprintf(arqName, sizeof(arqName), "%s", name);
+
+  FILE *tables = fopen("struct.txt", "r");
+  strcat(arqName, ":");
+
+  while (fgets(row, 1000, tables) != NULL) {
+    if (strstr(row, arqName) != NULL) {
+      char *indexTwoPoints = strchr(row, ':');
+      if (indexTwoPoints != NULL) {
+        *indexTwoPoints = '\0';
+
+        char *initialColumn = indexTwoPoints + 1;
+        char *indexParenthesis = strchr(initialColumn, '(');
+        int count = 1;
+
+        while (indexParenthesis != NULL) {
+          char *indexComma = strchr(indexParenthesis, ',');
+          if (indexComma != NULL) {
+            *indexComma = '\0';
+            char *nameColumn = indexParenthesis + 1;
+            printf("%d - %s\n", count++, nameColumn);
+            initialColumn = indexComma + 1;
+            indexParenthesis = strchr(initialColumn, '(');
+          } else {
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  fclose(tables);
+}
+
 void insertData(char *name) {
   char arqName[50];
   snprintf(arqName, sizeof(arqName), "%s", name);
@@ -213,7 +250,7 @@ void showData(char *name) {
 }
 
 void searchData(char *name) {
-  //To make
+  listColumns(name);
 }
 
 void delData(char *name) {
