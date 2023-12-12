@@ -303,6 +303,44 @@ void getGreater(char *name, char *columnName, char *keyword){
   fclose(tables);
 }
 
+void getGreaterEqual(char *name, char *columnName, char *keyword){
+  char row[1000];
+
+  FILE *tables = fopen(path(name), "r");
+
+  while (fgets(row, 1000, tables) != NULL) {
+    char *begin = row;
+    char *end = NULL;
+
+    while ((begin = strchr(begin, '[')) != NULL) {
+      begin++;
+      end = strchr(begin, ']');
+
+      if (end != NULL) {
+        size_t length = end - begin;
+        char substring[length + 1];
+        strncpy(substring, begin, length);
+        substring[length] = '\0';
+
+        if(strstr(substring, columnName) != NULL){
+          const char delimiter = ':';
+          char *commaPos = strchr(substring, delimiter);
+
+          if (commaPos != NULL) {
+            commaPos++;
+          }
+
+          if (atof(commaPos) >= atof(keyword)){
+            printf("%s\n", row);
+          }
+        }
+      }
+      begin = end + 1;
+    }
+  }
+  fclose(tables);
+}
+
 void insertData(char *name) {
   char arqName[50];
   snprintf(arqName, sizeof(arqName), "%s", name);
