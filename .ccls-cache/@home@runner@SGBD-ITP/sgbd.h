@@ -417,6 +417,44 @@ void getLessEqual(char *name, char *columnName, char *keyword){
   fclose(tables);
 }
 
+void getClose(char *name, char *columnName, char *keyword){
+  char row[1000];
+
+  FILE *tables = fopen(path(name), "r");
+
+  while (fgets(row, 1000, tables) != NULL) {
+    char *begin = row;
+    char *end = NULL;
+
+    while ((begin = strchr(begin, '[')) != NULL) {
+      begin++;
+      end = strchr(begin, ']');
+
+      if (end != NULL) {
+        size_t length = end - begin;
+        char substring[length + 1];
+        strncpy(substring, begin, length);
+        substring[length] = '\0';
+
+        if(strstr(substring, columnName) != NULL){
+          const char delimiter = ':';
+          char *commaPos = strchr(substring, delimiter);
+
+          if (commaPos != NULL) {
+            commaPos++;
+          }
+
+          if (strstr(commaPos, keyword) != NULL) {
+              printf("%s\n", row);
+          } 
+        }
+      }
+      begin = end + 1;
+    }
+  }
+  fclose(tables);
+}
+
 void insertData(char *name) {
   char arqName[50];
   snprintf(arqName, sizeof(arqName), "%s", name);
@@ -491,13 +529,12 @@ void searchData(char *name) {
 
   printf("\nDisponible columns in table %s:\n", name);
   listColumns(name);
-  printf("Enter the column: ");
+  printf("\nEnter the column name: ");
   scanf("%s", columnName);
 
   char *type = getType(name, columnName);
-  printf("==%s==", type);
 
-  printf("\nEnter what you search: ");
+  printf("\nEnter what you wanna search: ");
   scanf("%s", keyword);
 
   printf("\n1 - Values greater than the value reported\n");
@@ -508,8 +545,10 @@ void searchData(char *name) {
   printf("6 - Values close to the reported value (only if type = string)\n\n");
 
   int searchType;
-  printf("Choose the type of search:");
+  printf("Choose the type of search: ");
   scanf("%d", &searchType);
+
+  printf("\nResults:\n");
   switch(searchType){
 
     case 1: 
@@ -543,7 +582,12 @@ void searchData(char *name) {
         printf("%s must have type int or double!", columnName);
       }
       break;
-    case 6: ;
+    case 6:
+      if (strcmp(type, "i") == 0 || strcmp(type, "pk") == 0 || strcmp(type, "d") == 0){
+        printf("%s must have type int or double!", columnName);
+      } else if (strcmp(type, "c") == 0 || strcmp(type, "s") == 0){
+        getClose(name, columnName, keyword);
+      }
       break;
   }
 
