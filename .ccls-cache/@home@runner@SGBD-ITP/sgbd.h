@@ -89,7 +89,6 @@ void makeTable() {
     printf("Type: ");
     scanf("%c%c", &type, &trash);
     fprintf(table, "(%s, %c) ", name, type);
-
     printf("New colum [Y/N]: ");
     scanf("%s%c", &option, &trash);
     if (tolower(option) == 'n') {
@@ -134,7 +133,7 @@ int verifyPK(char *nameArq, char *data) {
   char row[1000];
   char aux[50];
   snprintf(aux, 50, "): %s]", data);
-  
+
   while (fgets(row, 1000, table) != NULL) {
     if (strstr(row, aux) != NULL) {
       return 1;
@@ -200,7 +199,7 @@ char *getType(char *nameTable, char *nameCol){
 
           while (indexParenthesis != NULL) {
             char *indexFinalParenthesis = strchr(indexParenthesis, ')');
-            
+
             if (indexFinalParenthesis != NULL) {
               *indexFinalParenthesis = '\0';
               char *nameColumn = indexParenthesis + 1;
@@ -214,7 +213,7 @@ char *getType(char *nameTable, char *nameCol){
                 }
                 return commaPos;
               }
-              
+
               initialColumn = indexFinalParenthesis + 1;
               indexParenthesis = strchr(initialColumn, '(');
             } else {
@@ -224,6 +223,46 @@ char *getType(char *nameTable, char *nameCol){
         }
       }
     }
+  return nameCol;
+}
+
+void getEqual(char *name, char *columnName, char *keyword){
+  char row[1000];
+
+  FILE *tables = fopen(path(name), "r");
+
+  while (fgets(row, 1000, tables) != NULL) {
+    char *begin = row;
+    char *end = NULL;
+
+    while ((begin = strchr(begin, '[')) != NULL) {
+      begin++;
+      end = strchr(begin, ']');
+
+      if (end != NULL) {
+        size_t length = end - begin;
+        char substring[length + 1];
+        strncpy(substring, begin, length);
+        substring[length] = '\0';
+
+        if(strstr(substring, columnName) != NULL){
+          const char delimiter = ' ';
+          char *commaPos = strchr(substring, delimiter);
+
+          if (commaPos != NULL) {
+            commaPos++;
+          }
+          if (strcmp(keyword, commaPos) == 0){
+            printf("%s\n", row);
+          } else if (strstr(commaPos, keyword) != NULL){
+            printf("%s\n", row);
+          }
+        }
+      }
+      begin = end + 1;
+    }
+  }
+  fclose(tables);
 }
 
 void insertData(char *name) {
@@ -297,16 +336,65 @@ void showData(char *name) {
 void searchData(char *name) {
   char keyword[50];
   char columnName[50];
-  
+
   printf("\nDisponible columns in table %s:\n", name);
   listColumns(name);
   printf("Enter the column: ");
   scanf("%s", columnName);
 
   char *type = getType(name, columnName);
-  
+  printf("==%s==", type);
+
   printf("\nEnter what you search: ");
   scanf("%s", keyword);
+
+  printf("\n1 - Values greater than the value reported\n");
+  printf("2 - Values greater than or equal to the value informed\n");
+  printf("3 - Values equal to the value informed\n");
+  printf("4 - Values less than the value informed\n");
+  printf("5 - Values less than or equal to the value informed\n");
+  printf("6 - Values close to the reported value (only if type = string)\n\n");
+
+  int searchType;
+  printf("Choose the type of search:");
+  scanf("%d", &searchType);
+  switch(searchType){
+
+    case 1: 
+      if (strcmp(type, "i") == 0 || strcmp(type, "pk") == 0 || strcmp(type, "d") == 0){
+        getGreater(name, columnName, keyword);
+      } else if (strcmp(type, "c") == 0 || strcmp(type, "s") == 0){
+        printf("%s must have type int or double!", columnName);
+      }
+      break;
+    case 2:
+      if (strcmp(type, "i") == 0 || strcmp(type, "pk") == 0 || strcmp(type, "d") == 0){
+        getGreaterEqual(name, columnName, keyword);
+      } else if (strcmp(type, "c") == 0 || strcmp(type, "s") == 0){
+        printf("%s must have type int or double!", columnName);
+      }
+      break;
+    case 3:
+      getEqual(name, columnName, keyword);
+      break;
+    case 4:
+      if (strcmp(type, "i") == 0 || strcmp(type, "pk") == 0 || strcmp(type, "d") == 0){
+        getLess(name, columnName, keyword);
+      } else if (strcmp(type, "c") == 0 || strcmp(type, "s") == 0){
+        printf("%s must have type int or double!", columnName);
+      }
+      break;
+    case 5:
+      if (strcmp(type, "i") == 0 || strcmp(type, "pk") == 0 || strcmp(type, "d") == 0){
+        getLessEqual(name, columnName, keyword);
+      } else if (strcmp(type, "c") == 0 || strcmp(type, "s") == 0){
+        printf("%s must have type int or double!", columnName);
+      }
+      break;
+    case 6: ;
+      break;
+  }
+
 }
 
 void delData(char *name) {
@@ -320,7 +408,7 @@ void delData(char *name) {
     char row[1000];
     char aux[50] = "): ";
     strcat(aux, strcat(pk, "]"));
-    
+
     while (fgets(row, sizeof(row), table) != NULL) {
       if (strstr(row, aux) == NULL) {
         fputs(row, tempTable);
@@ -330,10 +418,10 @@ void delData(char *name) {
     remove(path(name));
     rename("Tables/tempTable.txt", path(name));
     fclose(tempTable);
-    
+
   } else {
     printf("\nInvalid Primary Key!\n");
     return;
   }
-  
+
 }
