@@ -181,6 +181,51 @@ void listColumns(char *name){
   fclose(tables);
 }
 
+char *getType(char *nameTable, char *nameCol){
+    char row[1000];
+    char arqName[50];
+    snprintf(arqName, sizeof(arqName), "%s", nameTable);
+
+    FILE *tables = fopen("struct.txt", "r");
+    strcat(arqName, ":");
+
+    while (fgets(row, 1000, tables) != NULL) {
+      if (strstr(row, arqName) != NULL) {
+        char *indexTwoPoints = strchr(row, ':');
+        if (indexTwoPoints != NULL) {
+          *indexTwoPoints = '\0';
+
+          char *initialColumn = indexTwoPoints + 1;
+          char *indexParenthesis = strchr(initialColumn, '(');
+
+          while (indexParenthesis != NULL) {
+            char *indexFinalParenthesis = strchr(indexParenthesis, ')');
+            
+            if (indexFinalParenthesis != NULL) {
+              *indexFinalParenthesis = '\0';
+              char *nameColumn = indexParenthesis + 1;
+
+              if(strstr(nameColumn, nameCol) != NULL){
+                const char delimiter = ' ';
+                char *commaPos = strchr(nameColumn, delimiter);
+
+                if (commaPos != NULL) {
+                      commaPos++;
+                }
+                return commaPos;
+              }
+              
+              initialColumn = indexFinalParenthesis + 1;
+              indexParenthesis = strchr(initialColumn, '(');
+            } else {
+              break;
+            }
+          }
+        }
+      }
+    }
+}
+
 void insertData(char *name) {
   char arqName[50];
   snprintf(arqName, sizeof(arqName), "%s", name);
@@ -250,7 +295,18 @@ void showData(char *name) {
 }
 
 void searchData(char *name) {
+  char keyword[50];
+  char columnName[50];
+  
+  printf("\nDisponible columns in table %s:\n", name);
   listColumns(name);
+  printf("Enter the column: ");
+  scanf("%s", columnName);
+
+  char *type = getType(name, columnName);
+  
+  printf("\nEnter what you search: ");
+  scanf("%s", keyword);
 }
 
 void delData(char *name) {
